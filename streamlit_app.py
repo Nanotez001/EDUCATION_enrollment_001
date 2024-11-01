@@ -60,7 +60,7 @@ def try_login(input_username,input_password):
     cursor.close()
     conn.close()
 
-input_username = st.text_input("Username", key="username")
+input_username = st.text_input("Username", key="username",placeholder="Student's ID")
 input_password = st.text_input("Password", key="password", type="password")
 if st.button("Login"):
     try_login(input_username, input_password)
