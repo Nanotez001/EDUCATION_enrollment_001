@@ -4,24 +4,22 @@ from mysql.connector import Error
 from time import sleep
 import hashlib
 
-config = {
+#========================================
+#(1) Test Connection
+
+st.write("TEST Connection")
+def create_connection():
+    config = {
     'user': st.secrets["mysql"]["user"],
     'password': st.secrets["mysql"]["password"],
     'host': st.secrets["mysql"]["host"],
     'port': st.secrets["mysql"]["port"],
     'database': st.secrets["mysql"]["database"]
 }
-
-#========================================
-#(1) Test Connection
-
-st.write("TEST Connection")
-def create_connection():
-    """Create a connection to the MySQL database."""
     try:
         conn = mysql.connector.connect(**config)
         if conn.is_connected():
-            st.write("Connected to MySQL database")
+            # st.write("Connected to MySQL database")
             return conn
     except Error as e:
         st.error(f"Error connecting to MySQL: {e}")
@@ -43,14 +41,14 @@ def hash_password(password):
 def try_login(input_username,input_password):
     conn = create_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT password_hash FROM student_login WHERE username = %s ",input_username)
+    cursor.execute("SELECT password FROM student_login WHERE student_id = %s ",(input_username,))
     result = cursor.fetchone()
     if result:
-        store_password = result[0]
+        store_password = hash_password(result[0])
         if store_password == hash_password(input_password):
             st.success("Logged in!")
             sleep(1)
-            st.switch_page("./pages/Home.py")
+            st.switch_page("pages/home.py")
         else:
             st.error("Your username or password is incorrect")
     else:
