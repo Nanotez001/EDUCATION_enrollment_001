@@ -7,7 +7,6 @@ import hashlib
 #========================================
 #(1) Test Connection
 
-st.write("TEST Connection")
 def create_connection():
     config = {
     'user': st.secrets["mysql"]["user"],
@@ -19,19 +18,15 @@ def create_connection():
     try:
         conn = mysql.connector.connect(**config)
         if conn.is_connected():
-            # st.write("Connected to MySQL database")
+
             return conn
     except Error as e:
         st.error(f"Error connecting to MySQL: {e}")
         return None
-conn = create_connection()
-if conn:
-    cursor = conn.cursor()
-else:
-    st.error("Failed to connect to the database.")
-cursor.close()
-conn.close()
-
+    
+def close_connection(conn):
+    if conn and conn.is_connected():
+        conn.close()
 #========================================
 #2 Login
 def hash_password(password):
@@ -58,11 +53,21 @@ def try_login(input_username,input_password):
     cursor.close()
     conn.close()
 
+#========================================
+
+st.title("Student login")
 input_username = st.text_input("Username", key="username",placeholder="Student's ID")
 input_password = st.text_input("Password", key="password", type="password")
 if st.button("Login"):
     try_login(input_username, input_password)
 
+#========================================
 
-
-
+st.write("TEST Connection") 
+conn = create_connection()
+if conn:
+    st.write("Connected to MySQL database")
+    cursor = conn.cursor()
+else:
+    st.error("Failed to connect to the database.")
+close_connection(conn)
