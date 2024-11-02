@@ -35,8 +35,8 @@ def showColumn(table_name):
 
         # Print only the column names
         List_column_name = [column[0] for column in columns]
-        # return List_column_name
-        return st.write(List_column_name)
+        return List_column_name
+        # return st.write(List_column_name)
 
     except mysql.connector.Error as err:
         print(f"Error: {err}")
@@ -121,6 +121,8 @@ def show_table(table_name,column):
         
         if data:
             df = pd.DataFrame(data, columns=columns)
+            # df['student_id'] = df['student_id'].astype(str)
+            # df['year'] = df['year'].astype(str)
             st.dataframe(df)  # Display the DataFrame as an interactive table
         else:
             st.write("No data available.")
@@ -135,7 +137,7 @@ st.title("Home")
 conn = create_connection()
 cursor = conn.cursor()
 
-showColumn("student")
+show_table("student","*")
 
 
 
